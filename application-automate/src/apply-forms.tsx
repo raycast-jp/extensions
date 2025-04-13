@@ -46,12 +46,12 @@ const FORMS: Form[] = [
 
 async function applyForm(form: Form, preset: FormPreset) {
   const formParams = {
-    "entry.2005620554": preset.companyName,   // 会社名
-    "entry.185333929": preset.name,           // 名前
-    "entry.1045781291": preset.email,         // メールアドレス
-    "entry.1065046570": preset.address,       // 住所
-    "entry.1166974658": preset.phone || "",   // 電話番号
-    "entry.839337160": preset.comment || "",  // コメント
+    "entry.2005620554": preset.companyName, // 会社名
+    "entry.185333929": preset.name, // 名前
+    "entry.1045781291": preset.email, // メールアドレス
+    "entry.1065046570": preset.address, // 住所
+    "entry.1166974658": preset.phone || "", // 電話番号
+    "entry.839337160": preset.comment || "", // コメント
   };
 
   const params = new URLSearchParams(formParams);
