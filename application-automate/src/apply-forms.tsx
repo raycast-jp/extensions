@@ -25,7 +25,7 @@ const FORMS: Form[] = [
     presets: [
       {
         id: 1,
-        companyName: "株式会社サンプル1",
+        companyName: "ChiikawaX株式会社",
         name: "山田太郎",
         email: "yamada@example.com",
         address: "東京都渋谷区渋谷1-1-1",
@@ -34,7 +34,7 @@ const FORMS: Form[] = [
       },
       {
         id: 2,
-        companyName: "株式会社サンプル2",
+        companyName: "ウレシーサー株式会社",
         name: "鈴木一郎",
         email: "suzuki@example.com",
         address: "大阪府大阪市中央区1-1-1",
