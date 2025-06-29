@@ -23,69 +23,69 @@ interface ReplyType {
 const replyTypes: ReplyType[] = [
   {
     id: "short",
-    title: "短め",
+    title: "Short",
     icon: Icon.Message,
-    description: "簡潔で要点を絞った返信",
-    length: "約2-3行",
+    description: "Concise and focused reply",
+    length: "~1 lines",
   },
   {
     id: "medium",
-    title: "中くらい",
+    title: "Medium",
     icon: Icon.Text,
-    description: "適度な詳細を含む返信",
-    length: "約4-6行",
+    description: "Reply with moderate detail",
+    length: "~2-3 lines",
   },
   {
     id: "long",
-    title: "長め",
+    title: "Long",
     icon: Icon.Document,
-    description: "詳細で丁寧な返信",
-    length: "約7-10行",
+    description: "Detailed and polite reply",
+    length: "~5-7 lines",
   },
 ];
 
 async function generateReply(originalText: string, type: string): Promise<string> {
   if (!environment.canAccess(AI)) {
-    throw new Error("Raycast AIにアクセスできません。Raycast Proが必要です。");
+    throw new Error("Cannot access Raycast AI. Raycast Pro is required.");
   }
 
   let prompt = "";
-  const basePrompt = `以下のテキストに対して、適切な返信を生成してください。
+  const basePrompt = `Please generate an appropriate reply to the following text.
 
-元のテキスト：
+Original text:
 ${originalText}
 
-要求事項：
-- 必ず選択した文章と同じ言語で返信
-- 内容に応じて適切な敬語レベルを選択
-- 自然で読みやすい返信文を生成
-- テキストの内容や文脈に応じた適切な返信スタイルを選択`;
+Requirements:
+- Reply in the same language as the selected text
+- Choose appropriate level of formality based on context
+- Generate natural and readable reply text
+- Choose appropriate reply style based on text content and context`;
 
   switch (type) {
     case "short":
       prompt = `${basePrompt}
-- 簡潔で要点を絞った返信（2-3行程度に収めること）
-- 核心となる返答を簡潔に表現`;
+- Concise and focused reply (keep to about 1 line)
+- Express core response concisely`;
       break;
 
     case "medium":
       prompt = `${basePrompt}
-- 適度な詳細を含む返信（4-6行程度に収めること）
-- 元のテキストの要点に触れながら回答
-- 必要に応じて理由や補足説明を含める`;
+- Reply with moderate detail (keep to about 2-3 lines)
+- Address key points from the original text
+- Include reasons or additional explanations as needed`;
       break;
 
     case "long":
       prompt = `${basePrompt}
-- 詳細で丁寧な返信（7-10行程度に収めること）
-- 元のテキストに対する詳しい見解や意見を表現
-- 具体例や詳細な説明を含めた充実した内容
-- より丁寧で配慮のある表現を使用`;
+- Detailed and polite reply (keep to about 5-7 lines)
+- Express detailed views or opinions on the original text
+- Include specific examples and detailed explanations for comprehensive content
+- Use more polite and considerate expressions`;
       break;
 
     default:
       prompt = `${basePrompt}
-- 一般的で適切な返信`;
+- General and appropriate reply`;
   }
 
   try {
@@ -95,8 +95,8 @@ ${originalText}
     });
     return response;
   } catch (error) {
-    console.error("AI生成エラー:", error);
-    throw new Error("AI返信の生成に失敗しました。");
+    console.error("AI Generation Error:", error);
+    throw new Error("Failed to generate AI reply.");
   }
 }
 
@@ -114,10 +114,10 @@ export default function Command() {
         if (text && text.trim()) {
           setSelectedText(text.trim());
         } else {
-          setError("テキストが選択されていません");
+          setError("No text selected");
         }
-      } catch (error) {
-        setError("選択したテキストを取得できませんでした");
+      } catch {
+        setError("Could not retrieve selected text");
       } finally {
         setIsLoading(false);
       }
@@ -126,10 +126,10 @@ export default function Command() {
     fetchSelectedText();
   }, []);
 
-  // テキストが設定されたら並列でAI生成開始
+  // Start AI generation in parallel once text is set
   useEffect(() => {
     if (selectedText && !error) {
-      // 並列で全ての返信タイプを生成開始
+      // Start generation for all reply types in parallel
       replyTypes.forEach((replyType) => {
         generateReplyForType(replyType.id);
       });
@@ -144,15 +144,15 @@ export default function Command() {
       const reply = await generateReply(selectedText, type);
       setGeneratedReplies((prev) => ({ ...prev, [type]: reply }));
       showToast({
-        title: "返信を生成しました",
-        message: `${replyTypes.find((r) => r.id === type)?.title}の返信が完了`,
+        title: "Reply Generated",
+        message: `${replyTypes.find((r) => r.id === type)?.title} reply completed`,
       });
     } catch (error) {
-      console.error("返信生成エラー:", error);
+      console.error("Reply Generation Error:", error);
       showToast({
         style: Toast.Style.Failure,
-        title: "生成エラー",
-        message: error instanceof Error ? error.message : "返信の生成に失敗しました",
+        title: "Generation Error",
+        message: error instanceof Error ? error.message : "Failed to generate reply",
       });
     } finally {
       setGeneratingReply((prev) => ({ ...prev, [type]: false }));
@@ -165,12 +165,12 @@ export default function Command() {
     <List isLoading={isLoading} isShowingDetail={isShowingDetail}>
       {error && (
         <List.EmptyView
-          title="エラー"
+          title="Error"
           description={error}
           icon={{ source: Icon.Warning, tintColor: Color.Red }}
           actions={
             <ActionPanel>
-              <Action.CopyToClipboard title="エラー内容をコピー" content={error} />
+              <Action.CopyToClipboard title="Copy Error Message" content={error} />
             </ActionPanel>
           }
         />
@@ -188,46 +188,46 @@ export default function Command() {
               key={replyType.id}
               icon={replyType.icon}
               title={replyType.title}
-              subtitle={`⌘${index + 1}${isGenerating ? " (生成中...)" : reply ? " (生成済み)" : ""}`}
+              subtitle={`⌘${index + 1}${isGenerating ? " (Generating...)" : reply ? " (Generated)" : ""}`}
               detail={
                 <List.Item.Detail
                   markdown={
                     reply
-                      ? `## AI生成の返信文\n\n${reply}`
+                      ? `## Suggested Reply\n\n${reply}`
                       : isGenerating
-                        ? "## AI生成中...\n\n返信を生成しています。しばらくお待ちください。"
-                        : "## 生成待機中\n\n返信の生成を開始しています..."
+                        ? "## Generating...\n\nPlease wait a moment."
+                        : "## Waiting for generation...\n\nThe reply is being generated..."
                   }
                   metadata={
                     <List.Item.Detail.Metadata>
-                      <List.Item.Detail.Metadata.Label title="種類" text={replyType.title} />
-                      <List.Item.Detail.Metadata.Label title="説明" text={replyType.description} />
+                      <List.Item.Detail.Metadata.Label title="Type" text={replyType.title} />
+                      <List.Item.Detail.Metadata.Label title="Description" text={replyType.description} />
                       <List.Item.Detail.Metadata.Label
-                        title="予想される長さ"
+                        title="Expected Length"
                         text={replyType.length}
                         icon={{ source: Icon.Text, tintColor: Color.Blue }}
                       />
                       {reply && (
                         <List.Item.Detail.Metadata.Label
-                          title="実際の行数"
-                          text={`${replyLines}行`}
+                          title="Actual Lines"
+                          text={`${replyLines} lines`}
                           icon={{ source: Icon.List, tintColor: Color.Green }}
                         />
                       )}
                       <List.Item.Detail.Metadata.Separator />
                       <List.Item.Detail.Metadata.Label
-                        title="元の文章"
+                        title="Original Text"
                         text={selectedText.substring(0, 100) + (selectedText.length > 100 ? "..." : "")}
                       />
                       <List.Item.Detail.Metadata.Label
-                        title="文字数"
-                        text={`${selectedText.length}文字`}
+                        title="Character Count"
+                        text={`${selectedText.length} characters`}
                         icon={{ source: Icon.Document, tintColor: Color.Orange }}
                       />
                       <List.Item.Detail.Metadata.Separator />
                       <List.Item.Detail.Metadata.Label
-                        title="AI生成状態"
-                        text={isGenerating ? "生成中..." : reply ? "生成済み" : "開始待ち"}
+                        title="Generation Status"
+                        text={isGenerating ? "Generating..." : reply ? "Generated" : "Waiting to start"}
                         icon={{
                           source: Icon.Stars,
                           tintColor: isGenerating ? Color.Orange : reply ? Color.Green : Color.SecondaryText,
@@ -249,19 +249,19 @@ export default function Command() {
               ]}
               actions={
                 <ActionPanel>
-                  <ActionPanel.Section title={`${replyType.title}の返信`}>
+                  <ActionPanel.Section title={`${replyType.title} Reply`}>
                     {reply && (
                       <Action.CopyToClipboard
                         icon={Icon.Clipboard}
-                        title={`${replyType.title}の返信文をコピー`}
+                        title={`Copy ${replyType.title} Reply`}
                         content={reply}
-                        onCopy={() => showToast({ title: `${replyType.title}の返信文をコピーしました` })}
+                        onCopy={() => showToast({ title: `${replyType.title} reply copied` })}
                       />
                     )}
                     {reply && (
                       <Action
                         icon={Icon.Stars}
-                        title={`${replyType.title}の返信を再生成`}
+                        title={`Regenerate ${replyType.title} Reply`}
                         onAction={() => {
                           setGeneratedReplies((prev) => {
                             const newReplies = { ...prev };
@@ -273,12 +273,12 @@ export default function Command() {
                       />
                     )}
                   </ActionPanel.Section>
-                  <ActionPanel.Section title="その他">
+                  <ActionPanel.Section title="Others">
                     <Action.CopyToClipboard
                       icon={Icon.Text}
-                      title="元の文章をコピー"
+                      title="Copy Original Text"
                       content={selectedText}
-                      onCopy={() => showToast({ title: "元の文章をコピーしました" })}
+                      onCopy={() => showToast({ title: "Original text copied" })}
                     />
                   </ActionPanel.Section>
                 </ActionPanel>
