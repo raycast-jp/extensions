@@ -5,6 +5,8 @@
   "description": "email reply ai",
   "icon": "extension-icon.png",
   "author": "nagauta",
+  "owner": "devx-community-japan",
+  "categories": ["Productivity", "AI"],
   "license": "MIT",
   "commands": [
     {
