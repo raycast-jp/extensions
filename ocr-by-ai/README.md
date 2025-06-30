@@ -10,6 +10,8 @@ Vercel AI SDKとOpenAI GPT-4oを使用したスクリーンショットOCRエク
 - **自動クリップボードコピー**: 抽出されたテキストを自動でクリップボードにコピー
 - **信頼度表示**: AI OCRの信頼度を表示
 
+<img src="assets/demo.gif" width="80%" alt="デモGIF">
+
 ## セットアップ
 
 ### 1. OpenAI APIキーの取得
