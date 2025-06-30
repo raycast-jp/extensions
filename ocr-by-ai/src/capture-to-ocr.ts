@@ -95,7 +95,6 @@ async function performOCR(imagePath: string, apiKey: string, model: string = "gp
   }
 }
 
-// クリーンアップ用の関数
 function cleanupTempFile(filePath: string) {
   try {
     unlinkSync(filePath);
@@ -119,13 +118,11 @@ export default async function main() {
   let tempImagePath: string | null = null;
 
   try {
-    // ローディングトーストを表示
     await showToast({
       style: Toast.Style.Animated,
       title: "スクリーンショットを撮影中...",
     });
 
-    // スクリーンショット撮影
     const result = await runAppleScript(captureScript);
     tempImagePath = result.trim();
 
