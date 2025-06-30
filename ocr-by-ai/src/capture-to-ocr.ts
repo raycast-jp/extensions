@@ -32,10 +32,8 @@ function encodeImageToBase64(imagePath: string): string {
 
 async function performOCR(imagePath: string, apiKey: string, model: string = "gpt-4o") {
   try {
-    console.log("Starting OCR with model:", model, "API key length:", apiKey.length);
 
     const base64Image = encodeImageToBase64(imagePath);
-    console.log("Image encoded, base64 length:", base64Image.length);
 
     const openai = new OpenAI({
       apiKey: apiKey,
@@ -69,8 +67,6 @@ async function performOCR(imagePath: string, apiKey: string, model: string = "gp
       throw new Error("OpenAI APIから応答を取得できませんでした");
     }
 
-    console.log("Raw OpenAI response:", content);
-
     try {
       const jsonMatch = content.match(/\{.*\}/s);
       if (!jsonMatch) {
@@ -84,7 +80,6 @@ async function performOCR(imagePath: string, apiKey: string, model: string = "gp
       const parsedResult = JSON.parse(jsonMatch[0]);
       const validatedResult = ocrResultSchema.parse(parsedResult);
 
-      console.log("OCR completed successfully");
       return validatedResult;
     } catch (parseError) {
       console.warn("JSON parsing failed, using raw text:", parseError);
@@ -112,12 +107,6 @@ function cleanupTempFile(filePath: string) {
 export default async function main() {
   const preferences = getPreferenceValues<Preferences>();
 
-  console.log("Preferences loaded:", {
-    hasApiKey: !!preferences.openaiApiKey,
-    keyLength: preferences.openaiApiKey?.length || 0,
-    model: preferences.model,
-  });
-
   if (!preferences.openaiApiKey || preferences.openaiApiKey.trim() === "") {
     await showToast({
       style: Toast.Style.Failure,
@@ -143,8 +132,6 @@ export default async function main() {
     if (!tempImagePath) {
       throw new Error("スクリーンショットの撮影がキャンセルされました");
     }
-
-    console.log("Screenshot captured at:", tempImagePath);
 
     await showToast({
       style: Toast.Style.Animated,
