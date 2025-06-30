@@ -1,0 +1,74 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "ocr-by-ai",
+  "title": "Ocr by AI",
+  "description": "Advanced OCR using AI to extract text from screenshots with high accuracy",
+  "icon": "extension-icon.png",
+  "author": "nagauta",
+  "owner": "raycast-community-japan",
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "capture-to-ocr",
+      "title": "Capture to Ocr",
+      "description": "Capture screenshot and extract text using AI OCR technology",
+      "mode": "no-view"
+    }
+  ],
+  "preferences": [
+    {
+      "name": "openaiApiKey",
+      "title": "OpenAI API Key",
+      "description": "OpenAI APIキーを入力してください",
+      "type": "password",
+      "required": true
+    },
+    {
+      "name": "model",
+      "title": "AI Model",
+      "description": "使用するAIモデルを選択してください",
+      "type": "dropdown",
+      "required": true,
+      "default": "gpt-4o",
+      "data": [
+        {
+          "title": "GPT-4o",
+          "value": "gpt-4o"
+        },
+        {
+          "title": "GPT-4o mini",
+          "value": "gpt-4o-mini"
+        },
+        {
+          "title": "GPT-4 Vision",
+          "value": "gpt-4-vision-preview"
+        }
+      ]
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.100.3",
+    "@raycast/utils": "^1.17.0",
+    "ai": "^4.0.28",
+    "@ai-sdk/openai": "^1.0.4",
+    "openai": "^4.75.0",
+    "form-data": "^4.0.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^2.0.4",
+    "@types/node": "22.13.10",
+    "@types/react": "19.0.10",
+    "eslint": "^9.22.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.2"
+  },
+  "scripts": {
+    "build": "ray build",
+    "dev": "ray develop",
+    "fix-lint": "ray lint --fix",
+    "lint": "ray lint",
+    "prepublishOnly": "echo \"\\n\\nIt seems like you are trying to publish the Raycast extension to npm.\\n\\nIf you did intend to publish it to npm, remove the \\`prepublishOnly\\` script and rerun \\`npm publish\\` again.\\nIf you wanted to publish it to the Raycast Store instead, use \\`npm run publish\\` instead.\\n\\n\" && exit 1",
+    "publish": "npx @raycast/api@latest publish"
+  }
+}
