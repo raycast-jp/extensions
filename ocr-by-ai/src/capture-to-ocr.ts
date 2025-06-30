@@ -32,7 +32,6 @@ function encodeImageToBase64(imagePath: string): string {
 
 async function performOCR(imagePath: string, apiKey: string, model: string = "gpt-4o") {
   try {
-
     const base64Image = encodeImageToBase64(imagePath);
 
     const openai = new OpenAI({
