@@ -9,21 +9,18 @@ interface Preferences {
   model: string;
 }
 
-// スクリーンショット撮影のAppleScript
 const captureScript = `
   set screenshotPath to (path to desktop folder as string) & "raycast_ocr_temp.png"
   do shell script "screencapture -i " & quoted form of POSIX path of screenshotPath
   return POSIX path of screenshotPath
 `;
 
-// OCR結果のスキーマ定義
 const ocrResultSchema = z.object({
   text: z.string().describe("Extract all text content from the image"),
   confidence: z.number().min(0).max(1).describe("Confidence level of the extracted text"),
   language: z.string().describe("Detected language of the text"),
 });
 
-// 画像をbase64エンコード
 function encodeImageToBase64(imagePath: string): string {
   try {
     const imageBuffer = readFileSync(imagePath);
@@ -33,7 +30,6 @@ function encodeImageToBase64(imagePath: string): string {
   }
 }
 
-// OCR処理を実行
 async function performOCR(imagePath: string, apiKey: string, model: string = "gpt-4o") {
   try {
     console.log("Starting OCR with model:", model, "API key length:", apiKey.length);
@@ -75,11 +71,9 @@ async function performOCR(imagePath: string, apiKey: string, model: string = "gp
 
     console.log("Raw OpenAI response:", content);
 
-    // JSONレスポンスをパース
     try {
       const jsonMatch = content.match(/\{.*\}/s);
       if (!jsonMatch) {
-        // JSONが見つからない場合は、テキストをそのまま使用
         return {
           text: content,
           confidence: 0.9,
@@ -137,7 +131,7 @@ export default async function main() {
 
   try {
     // ローディングトーストを表示
-    const loadingToast = await showToast({
+    await showToast({
       style: Toast.Style.Animated,
       title: "スクリーンショットを撮影中...",
     });
@@ -152,20 +146,19 @@ export default async function main() {
 
     console.log("Screenshot captured at:", tempImagePath);
 
-    // OCR処理中のトーストに更新
-    loadingToast.title = "AI OCR処理中...";
+    await showToast({
+      style: Toast.Style.Animated,
+      title: "AI OCR処理中...",
+    });
 
-    // OCR処理実行
     const ocrResult = await performOCR(tempImagePath, preferences.openaiApiKey.trim(), preferences.model || "gpt-4o");
 
     if (!ocrResult.text || ocrResult.text.trim().length === 0) {
       throw new Error("画像からテキストを抽出できませんでした");
     }
 
-    // クリップボードにコピー
     await Clipboard.copy(ocrResult.text);
 
-    // 成功トーストを表示
     await showToast({
       style: Toast.Style.Success,
       title: "OCR完了",
@@ -182,7 +175,6 @@ export default async function main() {
 
     captureException(error);
   } finally {
-    // 一時ファイルをクリーンアップ
     if (tempImagePath) {
       cleanupTempFile(tempImagePath);
     }
