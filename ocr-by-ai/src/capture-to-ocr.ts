@@ -47,7 +47,7 @@ async function performOCR(imagePath: string, apiKey: string, model: string = "gp
           content: [
             {
               type: "text",
-              text: '画像内のすべてのテキストを正確に抽出してください。テキストの配置や構造を可能な限り保持し、日本語、英語、その他の言語を適切に認識してください。結果は必ずJSON形式で返してください: {"text": "抽出したテキスト", "confidence": 0.95, "language": "日本語"}',
+              text: 'Please accurately extract all text content from this image. Preserve the layout and structure as much as possible, and properly recognize Japanese, English, and other languages. You must return the result in JSON format: {"text": "extracted text", "confidence": 0.95, "language": "detected language"}',
             },
             {
               type: "image_url",
